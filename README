@@ -1,0 +1,58 @@
+***************************************************************************************
+Files and folders in the project
+* tlsserver.c - tls server program 
+* tlsclient.c - tls client program 
+* cert_server - server certificate folder 
+* ca_client - client certificate authority folder
+* tunclient.sh - Brings up the TUN interface for the client and sets up routing tables
+* tunserver.sh - Brings up the TUN interface for the server and sets up routing tables
+***************************************************************************************
+
+-----------------------------------------
+To compile the client and server c files: 
+-----------------------------------------
+$ make 
+
+
+---------------------------
+To run the server:
+---------------------------
+$ ./tlsserver
+$ ./tunserver.sh
+Note: The server's certificate is ./cert_server/server-cert.pem, 
+and the common name of the certificate is 'ashrithchandramouli.com'. 
+Once the server program runs, the TUN interface is only created and needs to be brought up with an IP address.
+Routing tables also need to be configured so that the server can accept connections to the TUN interface.
+This is taken care of by the tunserver.sh which runs within the tunserver.c
+
+
+---------------------------
+To run the client:
+---------------------------
+
+Since the common name of the server's certificate is 'ashrithchandramouli.com', 
+the hostname used by the client should match with this common name, or
+the TLS connection will fail (this checking is implemented in the client 
+program).  
+
+First, add the following line to /etc/hosts, so the name 'ashrithchandramouli.com'
+is mapped to your server's IP address (server_ip should be replaced by a 
+real IP address):
+ 
+server_ip     ashrithchandramouli.com
+ 
+Now, we can run the client program (our server listens to port 4433).
+Once the client program runs, the TUN interface is only created and needs to be brought up with an IP address.
+Routing tables also need to be configured so that the client can easily contact the server.
+This is taken care of by the tunclient.sh which runs within the tunclient.c
+$ ./tlsclient ashrithchandramouli.com  4433
+
+We have put two CA certificates in the ./ca_client folder: one is the 
+CA that signs our server certificate, and the other is the CA that 
+signs Google's certificate. Therefore, we can also use our client to
+talk to Google's HTTPS server:
+
+$ ./tlsclient www.google.com 443
+
+See the instructions in the lab description if you want to use this client
+program to talk to other HTTPS servers. 
