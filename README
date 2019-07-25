@@ -1,16 +1,31 @@
+-----------------------------------------
+MiniVPN - A lightweight CLI VPN for Linux
+-----------------------------------------
+MiniVPN creates a secure Virtual Private network between a single client and a single server using minimal resources.
+This application can be used by anyone who knows their way around Linux and wants the basic functionalities of a VPN.
+The application is created as part of an academic project for the course 
+CSE 644 : Internet Security by Prof. Wenliang Du at Syracuse University
+
+You can run this application if you have a client Linux machine and a server Linux machine or two virtual machines running Linux.
+Copy the files server files into the server machine and client files into the client machine and do as follows
+
 ***************************************************************************************
 Files and folders in the project
+Server code
 * tlsserver.c - tls server program 
-* tlsclient.c - tls client program 
-* cert_server - server certificate folder 
-* ca_client - client certificate authority folder
-* tunclient.sh - Brings up the TUN interface for the client and sets up routing tables
 * tunserver.sh - Brings up the TUN interface for the server and sets up routing tables
+* cert_server - server certificate folder 
+
+Client code
+* tlsclient.c - tls client program 
+* tunclient.sh - Brings up the TUN interface for the client and sets up routing tables
+* ca_client - client certificate authority folder
 ***************************************************************************************
 
------------------------------------------
-To compile the client and server c files: 
------------------------------------------
+-------------------------------------------------------------
+To compile the client and server c files:
+Run the same command on both client and server machines first
+-------------------------------------------------------------
 $ make 
 
 
@@ -18,9 +33,8 @@ $ make
 To run the server:
 ---------------------------
 $ ./tlsserver
-$ ./tunserver.sh
 Note: The server's certificate is ./cert_server/server-cert.pem, 
-and the common name of the certificate is 'ashrithchandramouli.com'. 
+and the common name of the certificate is 'vpnlabserver.com'. 
 Once the server program runs, the TUN interface is only created and needs to be brought up with an IP address.
 Routing tables also need to be configured so that the server can accept connections to the TUN interface.
 This is taken care of by the tunserver.sh which runs within the tunserver.c
@@ -30,22 +44,22 @@ This is taken care of by the tunserver.sh which runs within the tunserver.c
 To run the client:
 ---------------------------
 
-Since the common name of the server's certificate is 'ashrithchandramouli.com', 
+Since the common name of the server's certificate is 'vpnlabserver.com', 
 the hostname used by the client should match with this common name, or
 the TLS connection will fail (this checking is implemented in the client 
 program).  
 
-First, add the following line to /etc/hosts, so the name 'ashrithchandramouli.com'
+First, add the following line to /etc/hosts, so the name 'vpnlabserver.com'
 is mapped to your server's IP address (server_ip should be replaced by a 
 real IP address):
  
-server_ip     ashrithchandramouli.com
+server_ip     vpnlabserver.com
  
 Now, we can run the client program (our server listens to port 4433).
 Once the client program runs, the TUN interface is only created and needs to be brought up with an IP address.
 Routing tables also need to be configured so that the client can easily contact the server.
 This is taken care of by the tunclient.sh which runs within the tunclient.c
-$ ./tlsclient ashrithchandramouli.com  4433
+$ ./tlsclient vpnlabserver.com  4433
 
 We have put two CA certificates in the ./ca_client folder: one is the 
 CA that signs our server certificate, and the other is the CA that 
